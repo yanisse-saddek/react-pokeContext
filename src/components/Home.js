@@ -1,7 +1,11 @@
 import axios from 'axios'
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useContext} from 'react'
+import {UserContext} from '../App'
+import NotConnected from './NotConnected'
+
 export default function Home(){
-    const [pokemon, setPokemon] = useState([])
+    const context = useContext(UserContext)
+    const [pokemon, setPokemon] = useState(null)
     useEffect(()=>{
         getPokemon()
     }, [])
@@ -14,19 +18,35 @@ export default function Home(){
                 console.log(pokemon.types)
         })
     }
+    const showPokeBinks =()=>{
+        if(pokemon){
+            return (
+                <div>
+                    <p>Name: {pokemon.name}</p>
+                    <p>Weight: {pokemon.weight}</p>
+                    <p>Height: {pokemon.height}</p>
+                    <p>Type: 
+                        {
+                            pokemon.types?
+                            pokemon.types.map(type=>type.type.name + " "):
+                            null
+                        }
+                    </p>
+                    <button onClick={()=>getPokemon()}>Nouveau pokeProute!</button>
+                </div>   
+            )    
+        }
+    }
     return(
         <>
-        <p>Name: {pokemon.name}</p>
-        <p>Weight: {pokemon.weight}</p>
-        <p>Height: {pokemon.height}</p>
-        <p>Type: 
-            {
-                pokemon.types?
-                pokemon.types.map(type=>type.type.name + " "):
-                null
-            }
-        </p>
-        <button onClick={()=>getPokemon()}>Nouveau pokeProute!</button>
+        {
+            context.Log
+            ?
+            showPokeBinks()
+            :
+            <NotConnected/>
+        }
+
         </>       
     )
 }
